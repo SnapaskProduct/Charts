@@ -20,6 +20,8 @@ import CoreGraphics
 import Cocoa
 #endif
 
+
+
 open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 {
     /// A nested array of elements ordered logically (i.e not in visual/drawing order) for use with VoiceOver
@@ -430,8 +432,18 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 // Set the color for the currently drawn value. If the index is out of bounds, reuse colors.
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
-            
+
+            #if canImport(UIKit)
+            let cornerRadius = barRect.width / 2
+            let path = UIBezierPath(
+                roundedRect: barRect,
+                byRoundingCorners: [.topLeft, .topRight],
+                cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+            )
+            path.fill()
+            #else
             context.fill(barRect)
+            #endif
             
             if drawBorder
             {
@@ -811,7 +823,17 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 
                 setHighlightDrawPos(highlight: high, barRect: barRect)
                 
+                #if canImport(UIKit)
+                let cornerRadius = barRect.width / 2
+                let path = UIBezierPath(
+                    roundedRect: barRect,
+                    byRoundingCorners: [.topLeft, .topRight],
+                    cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+                )
+                path.fill()
+                #else
                 context.fill(barRect)
+                #endif
             }
         }
         
